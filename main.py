@@ -11,12 +11,12 @@ L2_lambda=0.1
 syn_input_data = np.loadtxt('input.csv', delimiter=',')
 syn_output_data = np.genfromtxt('output.csv').reshape([-1, 1])
 [N, D]=syn_input_data.shape
-X_train = syn_input_data[0:0.8*N,:]
-X_Val = syn_input_data[0.8*N:0.9*N,:]
-X_test = syn_input_data[0.9*N:N,:]
-Y_train = syn_output_data[0:0.8*N,:]
-Y_val = syn_output_data[0.8*N:0.9*N,:]
-Y_test  = syn_output_data[0.9*N:N,:]
+X_train = syn_input_data[0:int(0.8*N),:]
+X_Val = syn_input_data[int(0.8*N):int(0.9*N),:]
+X_test = syn_input_data[int(0.9*N):N,:]
+Y_train = syn_output_data[0:int(0.8*N),:]
+Y_val = syn_output_data[int(0.8*N):int(0.9*N),:]
+Y_test  = syn_output_data[int(0.9*N):N,:]
 # RANDOMLY SHUFFLE THE DATA BEFORE PERFORMING THE KMEANS CLUSTERING
 # letor_input_data = np.genfromtxt('Querylevelnorm_X.csv', delimiter=',')
 # letor_output_data = np.genfromtxt('Querylevelnorm_t.csv', delimiter=',').reshape([-1, 1])
