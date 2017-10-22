@@ -56,9 +56,8 @@ for l in np.arange(0.,0.5,0.00001):
 	# print (W_CF)
 	Erms_train.append(erms(design_matrix_train, Y_train, W_CF, l))
 	lam.append(l)
-	design_matrix_val = design_matrix(X_test, centroids, spreads)
+	design_matrix_val = design_matrix(X_Val, centroids, spreads)
 	Erms_val.append(erms(design_matrix_val, Y_val, W_CF, l))
-
 	#Y_dash_test = design_matrix_val.dot(W)
 
 	# if lowest>Erms:
