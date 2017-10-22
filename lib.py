@@ -14,12 +14,13 @@ def kMeans(X, K):
 	print("Performing Kmeans clustering")
 	centroids,_ = kmeans(X,K)
 	# print ("Printing the centroids found:")
-	# print(centroids)
+	# print(centroids)np.linalg.inv
 	idx,_ = vq(X,centroids)
 	spreads=np.zeros((K, D, D))
 	for k in range(0,K):
 		mat = X[np.where(idx==k)[0]]
-		spreads[k,:,:] = np.cov(mat.T)
+		spreads[k,:,:] = np.linalg.pinv(np.cov(mat.T))
+		# spreads[k,:,:] = np.cov(mat.T)
 		# print (spreads[k,:,:])
 
 	# print(idx.shape)
@@ -37,7 +38,7 @@ def kMeans(X, K):
 #input : data set, and number of clusters found, spreads
 #output : design matrix using Gaussian basis function
 def design_matrix(X, mu, spreads):
-	# [N,D]=X.shape
+	# [N,D]=X.shapeg
 	# [M,d] = mu.shape
 	# phi=np.zeros((N,M));
 	# for i in range(0,M):
@@ -54,4 +55,4 @@ def design_matrix(X, mu, spreads):
 #output : res
 def closed_form_sol(L2_lambda, design_matrix, output_data):
 	return np.linalg.solve(L2_lambda * np.identity(design_matrix.shape[1]) +
-np.matmul(design_matrix.T, design_matrix),np.matmul(design_matrix.T,output_data)).flatten()
+	np.matmul(design_matrix.T, design_matrix),np.matmul(design_matrix.T,output_data)).flatten()
