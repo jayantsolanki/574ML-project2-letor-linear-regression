@@ -56,3 +56,24 @@ def design_matrix(X, mu, spreads):
 def closed_form_sol(L2_lambda, design_matrix, output_data):
 	return np.linalg.solve(L2_lambda * np.identity(design_matrix.shape[1]) +
 	np.matmul(design_matrix.T, design_matrix),np.matmul(design_matrix.T,output_data)).flatten()
+
+#################################
+#function for calculating the gradient descent solution
+#function sgd_solution(L2_lambda, design_matrix, output_data)
+#input : learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data
+#output : weights
+def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data):
+	[N,D]=design_matrix.shape
+	weights = np.zeros([1,D])
+	for epoch in range(num_epochs):
+		for i in range(int(N/minibatch_size)):
+			lower_bound = i * minibatch_size
+			upper_bound = min((i+1)*minibatch_size, N)
+			Phi = design_matrix[lower_bound : upper_bound, :]
+			t = output_data[lower_bound : upper_bound, :]
+			E_D = np.matmul((np.matmul(Phi, weights.T)-t).T, Phi)
+			E = (E_D + L2_lambda * weights) / minibatch_size
+			weights = weights - learning_rate * E
+		print(np.linalg.norm(E))
+		print (weights)
+	return weights.flatten()

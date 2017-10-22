@@ -28,17 +28,20 @@ lowest=100000
 LAMBDA=1000
 design_matrix=design_matrix(syn_input_data, centroids, spreads)
 # calculating the closed form
-for m in np.arange(0, 2,0.015):
-	W=closed_form_sol(m, design_matrix, syn_output_data)
-	W=W.reshape([K+1,1])
-	# print (W)
-	Y_dash = design_matrix.dot(W)
-	Error =  np.sum(np.square(syn_output_data - Y_dash))/2 + 0.5*m*(W.T.dot(W))
-	Erms = math.sqrt((2 * Error)/N)
-	if lowest>Erms:
-		lowest=Erms
-		LAMBDA=m
-	print("for lambda = %0.4f, ERMS = %0.4f"%(m, Erms))
+# for m in np.arange(0, 2,0.015):
+# 	W=closed_form_sol(m, design_matrix, syn_output_data)
+# 	W=W.reshape([K+1,1])
+# 	# print (W)
+# 	Y_dash = design_matrix.dot(W)
+# 	Error =  np.sum(np.square(syn_output_data - Y_dash))/2 + 0.5*m*(W.T.dot(W))
+# 	Erms = math.sqrt((2 * Error)/N)
+# 	if lowest>Erms:
+# 		lowest=Erms
+# 		LAMBDA=m
+# 	print("for lambda = %0.4f, ERMS = %0.4f"%(m, Erms))
 
-print("Min Erms is = %0.4f " %lowest)
-print("Min lambda is = %0.4f " %LAMBDA)
+# print("Min Erms is = %0.4f " %lowest)
+# print("Min lambda is = %0.4f " %LAMBDA)
+
+W = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data)
+print(W)
