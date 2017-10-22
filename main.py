@@ -43,17 +43,16 @@ for l in np.arange(0,2,0.015):
 	W_CF=closed_form_sol(l, design_matrix_train, Y_train)
 	W_CF=W_CF.reshape([K+1,1])
 	# print (W_CF)
-	Erms = erms(design_matrix_train, Y_train, W_CF, l)
-	# design_matrix_val = design_matrix(X_test, centroids, spreads)
-	# Y_dash_test = design_matrix_val.dot(W)
+	Erms_train = erms(design_matrix_train, Y_train, W_CF, l)
+	design_matrix_val = design_matrix(X_test, centroids, spreads)
+	Erms_val = erms(design_matrix_val, Y_val, W_CF, l)
+	#Y_dash_test = design_matrix_val.dot(W)
 
+	# if lowest>Erms:
+	# 	lowest=Erms
+	# 	LAMBDA=l
+	print("for lambda = %0.4f, ERMS Train = %0.4f, ERMS Val = %0.4f"%(l, Erms_train, Erms_val))
 
-
-	if lowest>Erms:
-		lowest=Erms
-		LAMBDA=l
-	print("for lambda = %0.4f, ERMS = %0.4f"%(l, Erms))
-
-print("Min Erms is = %0.4f " %lowest)
-print("Min lambda is = %0.4f " %LAMBDA)
+# print("Min Erms is = %0.4f " %lowest)
+# print("Min lambda is = %0.4f " %LAMBDA)
 
