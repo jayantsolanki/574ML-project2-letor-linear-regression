@@ -1,5 +1,6 @@
 #main.py
 import numpy as np
+import math
 from pylab import plot,show
 from numpy import vstack,array
 from numpy.random import rand
@@ -26,4 +27,9 @@ design_matrix=design_matrix(syn_input_data, centroids, spreads)
 W=closed_form_sol(L2_lambda, design_matrix, syn_output_data)
 W=W.reshape([4,1])
 print (W)
-print(design_matrix.dot(W))
+
+Y_dash = design_matrix.dot(W)
+
+Error =  np.sum((syn_output_data - Y_dash)**2)
+Erms = math.sqrt((2 * Error)/N)
+print(Erms)
