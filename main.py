@@ -39,7 +39,7 @@ design_matrix_train=design_matrix(X_train, centroids, spreads)
 ###############Validation and Parameters fine tuning
 
 # calculating the closed form
-for l in np.arange(0,2,0.015):
+for l in np.arange(0,0.5,0.0001):
 	W_CF=closed_form_sol(l, design_matrix_train, Y_train)
 	W_CF=W_CF.reshape([K+1,1])
 	# print (W_CF)
@@ -51,7 +51,7 @@ for l in np.arange(0,2,0.015):
 	# if lowest>Erms:
 	# 	lowest=Erms
 	# 	LAMBDA=l
-	print("for lambda = %0.4f, ERMS Train = %0.4f, ERMS Val = %0.4f"%(l, Erms_train, Erms_val))
+	print("for lambda = %0.4f, ERMS Train = %0.6f, ERMS Val = %0.6f"%(l, Erms_train, Erms_val))
 
 # print("Min Erms is = %0.4f " %lowest)
 # print("Min lambda is = %0.4f " %LAMBDA)
