@@ -8,7 +8,7 @@ from scipy.cluster.vq import kmeans,vq
 from lib import *
 import matplotlib.pyplot as plt
 
-K=3#number of clusters
+K=11#number of clusters
 L2_lambda=0.1
 syn_input_data = np.loadtxt('input.csv', delimiter=',')
 syn_output_data = np.genfromtxt('output.csv').reshape([-1, 1])
@@ -49,7 +49,7 @@ lam=[]
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-for l in np.arange(0,0.5,0.0001):
+for l in np.arange(0,1,0.001):
 	W_CF=closed_form_sol(l, design_matrix_train, Y_train)
 	W_CF=W_CF.reshape([K+1,1])
 	# print (W_CF)
@@ -68,8 +68,8 @@ for l in np.arange(0,0.5,0.0001):
 axes = plt.gca()
 axes.set_ylim([0,1])
 line1, = ax.plot(np.log(lam), Erms_train, 'r-')
-ax2 = ax.twinx()
-line1, = ax2.plot(np.log(lam), Erms_val, 'b-')
+# ax2 = ax.twinx()
+# line1, = ax2.plot(np.log(lam), Erms_val, 'b-')
 # print("Min Erms is = %0.4f " %lowest)
 # print("Min lambda is = %0.4f " %LAMBDA)
 plt.show()
