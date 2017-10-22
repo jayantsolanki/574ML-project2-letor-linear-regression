@@ -46,3 +46,12 @@ def design_matrix(X, mu, spreads):
 	# 	Sum=math.log(Mpx)+Sum
 	basis_func_outputs = np.exp(np.sum(np.matmul(X - mu, spreads) * (X - mu),axis=2) / (-2)).T
 	return np.insert(basis_func_outputs, 0, 1, axis=1)
+
+#################################
+#function for calculating the closed form solution
+#function closed_form_sol(L2_lambda, design_matrix, output_data)
+#input : L2_lambda, design_matrix, and output_data
+#output : res
+def closed_form_sol(L2_lambda, design_matrix, output_data):
+	return np.linalg.solve(L2_lambda * np.identity(design_matrix.shape[1]) +
+np.matmul(design_matrix.T, design_matrix),np.matmul(design_matrix.T,output_data)).flatten()
