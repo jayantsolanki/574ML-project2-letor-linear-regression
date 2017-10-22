@@ -11,37 +11,49 @@ L2_lambda=0.1
 syn_input_data = np.loadtxt('input.csv', delimiter=',')
 syn_output_data = np.genfromtxt('output.csv').reshape([-1, 1])
 [N, D]=syn_input_data.shape
+X_train = syn_input_data[0:0.8*N,:]
+X_Val = syn_input_data[0.8*N:0.9*N,:]
+X_test = syn_input_data[0.9*N:N,:]
+Y_train = syn_output_data[0:0.8*N,:]
+Y_val = syn_output_data[0.8*N:0.9*N,:]
+Y_test  = syn_output_data[0.9*N:N,:]
 # RANDOMLY SHUFFLE THE DATA BEFORE PERFORMING THE KMEANS CLUSTERING
 # letor_input_data = np.genfromtxt('Querylevelnorm_X.csv', delimiter=',')
 # letor_output_data = np.genfromtxt('Querylevelnorm_t.csv', delimiter=',').reshape([-1, 1])
 # print (syn_input_data.shape)
 # print (syn_output_data.shape)
 
-[centroids, spreads]=kMeans(syn_input_data, K)# number of clusters is 3
+[centroids, spreads]=kMeans(X_train, K)# number of clusters is 3
 # centroids=centroids.reshape([K,1,D])
 centroids = centroids[:, np.newaxis, :]
-syn_input_data = syn_input_data[np.newaxis, :, :]
-print (syn_input_data.shape)
+X_train = X_train[np.newaxis, :, :]
+print (X_train.shape)
 # print ("Printing the centroids found:")
 # print(centroids.shape)
 lowest=100000
 LAMBDA=1000
-design_matrix=design_matrix(syn_input_data, centroids, spreads)
+design_matrix_train=design_matrix(X_train, centroids, spreads)
+# W_SGD = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data)
+# print(W)
+
+###############Validation and Parameters fine tuning
+
 # calculating the closed form
-# for m in np.arange(0, 2,0.015):
-# 	W=closed_form_sol(m, design_matrix, syn_output_data)
-# 	W=W.reshape([K+1,1])
-# 	# print (W)
-# 	Y_dash = design_matrix.dot(W)
-# 	Error =  np.sum(np.square(syn_output_data - Y_dash))/2 + 0.5*m*(W.T.dot(W))
-# 	Erms = math.sqrt((2 * Error)/N)
-# 	if lowest>Erms:
-# 		lowest=Erms
-# 		LAMBDA=m
-# 	print("for lambda = %0.4f, ERMS = %0.4f"%(m, Erms))
+for l in np.arange(0,2,0.015):
+	W_CF=closed_form_sol(l, design_matrix_train, Y_train)
+	W_CF=W_CF.reshape([K+1,1])
+	# print (W_CF)
+	Erms = erms(design_matrix_train, Y_train, W_CF, l)
+	# design_matrix_val = design_matrix(X_test, centroids, spreads)
+	# Y_dash_test = design_matrix_val.dot(W)
 
-# print("Min Erms is = %0.4f " %lowest)
-# print("Min lambda is = %0.4f " %LAMBDA)
 
-W = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data)
-print(W)
+
+	if lowest>Erms:
+		lowest=Erms
+		LAMBDA=l
+	print("for lambda = %0.4f, ERMS = %0.4f"%(l, Erms))
+
+print("Min Erms is = %0.4f " %lowest)
+print("Min lambda is = %0.4f " %LAMBDA)
+

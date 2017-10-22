@@ -77,3 +77,11 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 		print(np.linalg.norm(E))
 		print (weights)
 	return weights.flatten()
+
+#Error function
+def erms(design_matrix, Y, W, L2_lambda):
+	[N, D] = design_matrix.shape
+	Y_dash = design_matrix.dot(W)
+	Error =  np.sum(np.square(Y - Y_dash))/2 + 0.5*L2_lambda*(W.T.dot(W))
+	Erms = np.sqrt((2 * Error)/N)
+	return Erms
