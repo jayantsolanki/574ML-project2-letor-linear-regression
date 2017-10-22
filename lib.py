@@ -10,6 +10,7 @@ from scipy.cluster.vq import kmeans,vq
 #input : data set, and number of clusters required
 #output : centroids calculated, spreads is the K covariance matrix
 def kMeans(X, K):
+	# np.random.shuffle(X)
 	[N,D]=X.shape
 	print("Performing Kmeans clustering")
 	centroids,_ = kmeans(X,K)
@@ -18,10 +19,11 @@ def kMeans(X, K):
 	idx,_ = vq(X,centroids)
 	spreads=np.zeros((K, D, D))
 	for k in range(0,K):
-		mat = X[np.where(idx==k)[0]]
-		spreads[k,:,:] = np.linalg.pinv(np.cov(mat.T))
+		mat = X[np.where(idx==k)[0],:]
+		print (mat.shape)
+		spreads[k,:,:] = np.linalg.pinv(np.cov(mat.T))#think about this line
 		# spreads[k,:,:] = np.cov(mat.T)
-		# print (spreads[k,:,:])
+		# print (spreads[k,:,:].shape)
 
 	# print(idx.shape)
 	# plot(X[idx==0,0],X[idx==0,1],'ob',
