@@ -6,6 +6,8 @@ from numpy import vstack,array
 from numpy.random import rand
 from scipy.cluster.vq import kmeans,vq
 from lib import *
+import matplotlib.pyplot as plt
+
 K=3#number of clusters
 L2_lambda=0.1
 syn_input_data = np.loadtxt('input.csv', delimiter=',')
@@ -39,20 +41,35 @@ design_matrix_train=design_matrix(X_train, centroids, spreads)
 ###############Validation and Parameters fine tuning
 
 # calculating the closed form
-for l in np.arange(0,2,0.015):
+# Erms_train=0;
+# l=0;
+Erms_train = []
+Erms_val = []
+lam=[]
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+for l in np.arange(0,0.5,0.0001):
 	W_CF=closed_form_sol(l, design_matrix_train, Y_train)
 	W_CF=W_CF.reshape([K+1,1])
 	# print (W_CF)
-	Erms_train = erms(design_matrix_train, Y_train, W_CF, l)
+	Erms_train.append(erms(design_matrix_train, Y_train, W_CF, l))
+	lam.append(l)
 	design_matrix_val = design_matrix(X_Val, centroids, spreads)
-	Erms_val = erms(design_matrix_val, Y_val, W_CF, l)
+	Erms_val.append(erms(design_matrix_val, Y_val, W_CF, l))
 	#Y_dash_test = design_matrix_val.dot(W)
 
 	# if lowest>Erms:
 	# 	lowest=Erms
 	# 	LAMBDA=l
-	print("for lambda = %0.4f, ERMS Train = %0.4f, ERMS Val = %0.4f"%(l, Erms_train, Erms_val))
-
+	# print("for lambda = %0.4f, ERMS Train = %0.6f, ERMS Val = %0.6f"%(l, Erms_train, Erms_val))
+# print(lam)
+# print(Erms_train)
+axes = plt.gca()
+axes.set_ylim([0,1])
+line1, = ax.plot(np.log(lam), Erms_train, 'r-')
+ax2 = ax.twinx()
+line1, = ax2.plot(np.log(lam), Erms_val, 'b-')
 # print("Min Erms is = %0.4f " %lowest)
 # print("Min lambda is = %0.4f " %LAMBDA)
-
+plt.show()

@@ -84,4 +84,4 @@ def erms(design_matrix, Y, W, L2_lambda):
 	Y_dash = design_matrix.dot(W)
 	Error =  np.sum(np.square(Y - Y_dash))/2 + 0.5*L2_lambda*(W.T.dot(W))
 	Erms = np.sqrt((2 * Error)/N)
-	return Erms
+	return Erms[0, 0]
