@@ -44,7 +44,7 @@ for l in np.arange(0,2,0.015):
 	W_CF=W_CF.reshape([K+1,1])
 	# print (W_CF)
 	Erms_train = erms(design_matrix_train, Y_train, W_CF, l)
-	design_matrix_val = design_matrix(X_test, centroids, spreads)
+	design_matrix_val = design_matrix(X_Val, centroids, spreads)
 	Erms_val = erms(design_matrix_val, Y_val, W_CF, l)
 	#Y_dash_test = design_matrix_val.dot(W)
 
