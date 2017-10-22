@@ -19,9 +19,10 @@ def kMeans(X, K):
 	spreads=np.zeros((K, D, D))
 	for k in range(0,K):
 		mat = X[np.where(idx==k)[0]]
-		spreads[k,:,:] = np.linalg.pinv(np.cov(mat.T))
+		print (mat.shape)
+		spreads[k,:,:] = np.linalg.pinv(np.cov(mat.T))#think about this line
 		# spreads[k,:,:] = np.cov(mat.T)
-		# print (spreads[k,:,:])
+		print (spreads[k,:,:].shape)
 
 	# print(idx.shape)
 	# plot(X[idx==0,0],X[idx==0,1],'ob',
