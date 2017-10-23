@@ -2,7 +2,7 @@ import numpy as np
 from pylab import plot,show
 from numpy import vstack,array
 from numpy.random import rand
-from scipy.cluster.vq import kmeans,vq
+from scipy.cluster.vq import kmeans2,vq
 
 #################################
 #function for calculating Kmeans clustering
@@ -13,7 +13,7 @@ def kMeans(X, K):
 	np.random.shuffle(X)
 	[N,D]=X.shape
 	print("Performing Kmeans clustering")
-	centroids,_ = kmeans(X,K)
+	centroids,_ = kmeans2(X,K)
 	# print ("Printing the centroids found:")
 	# print(centroids)np.linalg.inv
 	idx,_ = vq(X,centroids)
