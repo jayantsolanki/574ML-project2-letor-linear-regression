@@ -50,7 +50,7 @@ print (Y_Test.shape)
 # fig = plt.figure()
 # ax1 = fig.add_subplot(211)
 # ax2 = fig.add_subplot(212)
-k=10
+k=80
 while k<=80:
 	try:
 		[centroids, spreads]=kMeans(X_Train, k)# number of clusters is 3
@@ -69,7 +69,7 @@ while k<=80:
 	design_matriX_Train=design_matrix(X_Train2, centroids, spreads)
 	design_matriX_Val = design_matrix(X_Val, centroids, spreads)
 	design_matriX_Test = design_matrix(X_Test, centroids, spreads)
-	print(design_matriX_Train.shape)
+	# print(design_matriX_Train.shape)
 	Erms_train = []
 	Erms_val = []
 	Erms_test = []
@@ -103,10 +103,11 @@ while k<=80:
 			W_star=W
 	ErmsTest = erms(design_matriX_Test, Y_Test, W_star, LAMBDA)
 	Erms_test.append(ErmsTest)
-	print("At lambda : %0.4f and K = %d" %(LAMBDA, k))
-	print("		Min Erms in Training Set is = %0.4f" %trainError)
-	print("		Min Erms in Validation Set is = %0.4f" %lowest)
-	print("		Error in Test Set is = %0.4f" %ErmsTest)
+	# print("At lambda : %0.4f and K = %d" %(LAMBDA, k))
+	# print("		Min Erms in Training Set is = %0.4f" %trainError)
+	# print("		Min Erms in Validation Set is = %0.4f" %lowest)
+	# print("		Error in Test Set is = %0.4f" %ErmsTest)
+	print("%d %0.4f %0.4f %0.4f %0.4f" %(k, LAMBDA, trainError, lowest, ErmsTest))
 	k = k+5
 	# print("for lambda = %0.4f, ERMS Train = %0.6f, ERMS Val = %0.6f"%(l, Erms_train, Erms_val))
 # print(lam)

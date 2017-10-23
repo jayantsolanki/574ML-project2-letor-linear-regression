@@ -13,7 +13,7 @@ def kMeans(X, K):
 	# np.random.shuffle(X)
 	[N,D]=X.shape
 	Iterater=10
-	print("Performing Kmeans clustering: ", K)
+	# print("Performing Kmeans clustering: ", K)
 	centroids=np.zeros((K, D))
 	for i in range(1,Iterater+1): #running times
 		centrds,_ = kmeans2(X,K,minit='points')
