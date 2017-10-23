@@ -93,14 +93,14 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 		i=i+int(N/minibatch_size)
 		# print (weights.shape)
 		valE = erms(design_matrix_val, Y_Val, weights.T, L2_lambda)
-		print (epoch)
+		# print (epoch)
 		if valE<valError:
 			valError=valE
 			j=0; #resetting the j
 			i_star = i
 			weights_star = weights
 		elif j==P-1:
-			print (j)
+			print ("Early stopped at epoch: ", epoch)
 			break
 		else:
 			j=j+1

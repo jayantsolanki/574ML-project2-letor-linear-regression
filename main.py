@@ -8,7 +8,6 @@ from scipy.cluster.vq import kmeans,vq
 from lib import *
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn import svm
 
 #K=20#number of clusters
 #L2_lambda=0.1
@@ -48,14 +47,14 @@ print (Y_Test.shape)
 # Erms_train=0;
 # l=0;
 
-fig = plt.figure()
-ax1 = fig.add_subplot(211)
-ax2 = fig.add_subplot(212)
+# fig = plt.figure()
+# ax1 = fig.add_subplot(211)
+# ax2 = fig.add_subplot(212)
 k=10
-while k<=40:
+while k<=80:
 	try:
 		[centroids, spreads]=kMeans(X_Train, k)# number of clusters is 3
-	except Warning:
+	except:
 		continue
 
 	# centroids=centroids.reshape([K,1,D])
@@ -73,12 +72,15 @@ while k<=40:
 	print(design_matriX_Train.shape)
 	Erms_train = []
 	Erms_val = []
+	Erms_test = []
 	lam=[]
+	W_star=[]
+	trainError=0
 	for l in np.arange(0.1,2,0.1):
 		if implementation_mode == 'C':
 			W = closed_form_sol(l, design_matriX_Train, Y_Train)
 		elif implementation_mode == 'S':
-			W = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=10000, L2_lambda=l, design_matrix=design_matriX_Train, output_data=Y_Train, design_matrix_val = design_matriX_Val, Y_Val = Y_Val)
+			W = sgd_solution(learning_rate=1, minibatch_size=5569, num_epochs=100, L2_lambda=0.1, design_matrix=design_matriX_Train, output_data=Y_Train, design_matrix_val = design_matriX_Val, Y_Val = Y_Val)
 		W = W.reshape([k+1,1])
 		# print (W.shape)
 		# break
@@ -90,11 +92,22 @@ while k<=40:
 		Erms_val.append(ErmsVal)
 		#Y_dash_test = design_matriX_Val.dot(W)
 
+		# if lowest>ErmsVal:
+		# 	lowest=ErmsVal 	
+		# 	LAMBDA=l
+		# 	break
 		if lowest>ErmsVal:
 			lowest=ErmsVal 	
+			trainError = ErmsTrain
 			LAMBDA=l
-	print("Min Erms in Validation Set is = %0.4f at lambda : %0.4f and K = %d" %(lowest, LAMBDA, k))
-	k=k+5
+			W_star=W
+	ErmsTest = erms(design_matriX_Test, Y_Test, W_star, LAMBDA)
+	Erms_test.append(ErmsTest)
+	print("At lambda : %0.4f and K = %d" %(LAMBDA, k))
+	print("		Min Erms in Training Set is = %0.4f" %trainError)
+	print("		Min Erms in Validation Set is = %0.4f" %lowest)
+	print("		Error in Test Set is = %0.4f" %ErmsTest)
+	k = k+5
 	# print("for lambda = %0.4f, ERMS Train = %0.6f, ERMS Val = %0.6f"%(l, Erms_train, Erms_val))
 # print(lam)
 # print(Erms_train)
