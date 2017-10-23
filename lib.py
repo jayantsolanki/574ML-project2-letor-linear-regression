@@ -10,7 +10,7 @@ from scipy.cluster.vq import kmeans2,vq
 #input : data set, and number of clusters required
 #output : centroids calculated, spreads is the K covariance matrix
 def kMeans(X, K):
-	np.random.shuffle(X)
+	# np.random.shuffle(X)
 	[N,D]=X.shape
 	print("Performing Kmeans clustering")
 	centroids,_ = kmeans2(X,K)
@@ -64,10 +64,26 @@ def closed_form_sol(L2_lambda, design_matrix, output_data):
 #function sgd_solution(L2_lambda, design_matrix, output_data)
 #input : learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data
 #output : weights
-def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data):
+def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data, design_matrix_val, Y_Val):
 	[N,D]=design_matrix.shape
 	weights = np.zeros([1,D])
+	valError = float("inf")#defining the infinite value for the validation error, initially
+	weights_star = np.zeros([1,D]) #weight to store the optimum weights
+	i=0
+	i_star=0
+	j=0
+	P=10# patience value
 	for epoch in range(num_epochs):
+			do the validation test erros
+			call validationerrr
+			if valE<ERMSVal:
+				ERMSVal=valE
+				j=0;
+				i_star = i
+			else:
+				j=j+1
+			if j==P
+				break
 		for i in range(int(N/minibatch_size)):
 			lower_bound = i * minibatch_size
 			upper_bound = min((i+1)*minibatch_size, N)
@@ -76,6 +92,7 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 			E_D = np.matmul((np.matmul(Phi, weights.T)-t).T, Phi)
 			E = (E_D + L2_lambda * weights) / minibatch_size
 			weights = weights - learning_rate * E
+		i=i+int(N/minibatch_size)
 		print(np.linalg.norm(E))
 		print (weights)
 	return weights.flatten()

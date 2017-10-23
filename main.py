@@ -59,7 +59,7 @@ LAMBDA=1000
 design_matrix_train=design_matrix(X_train, centroids, spreads)
 design_matrix_val = design_matrix(X_Val, centroids, spreads)
 design_matrix_test = design_matrix(X_Test, centroids, spreads)
-# W_SGD = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data)
+# W_SGD = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data, design_matrix_val, Y_Val)
 # print(W)
 
 ###############Validation and Parameters fine tuning
