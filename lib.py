@@ -84,16 +84,16 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 	j=0
 	P=10# patience value
 	for epoch in range(num_epochs):
-			do the validation test erros
-			call validationerrr
-			if valE<ERMSVal:
-				ERMSVal=valE
-				j=0;
-				i_star = i
-			else:
-				j=j+1
-			if j==P
-				break
+		valE = erms(design_matrix_val, Y_Val, weights.flatten(), L2_lambda)
+		if valE<valError:
+			valError=valE
+			j=0; #resetting the j
+			i_star = i
+			weights_star = weights
+		elif j==p:
+			break
+		else
+			j=j+1
 		for i in range(int(N/minibatch_size)):
 			lower_bound = i * minibatch_size
 			upper_bound = min((i+1)*minibatch_size, N)
@@ -105,7 +105,7 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 		i=i+int(N/minibatch_size)
 		print(np.linalg.norm(E))
 		print (weights)
-	return weights.flatten()
+	return weights_star.flatten()
 
 #Error function
 def erms(design_matrix, Y, W, L2_lambda):

@@ -53,11 +53,11 @@ print (X_Train.shape)
 # print(centroids.shape)
 lowest=100000
 LAMBDA=1000
-design_matriX_Train = design_matrix(X_Train, centroids, spreads)
+
+design_matriX_Train=design_matrix(X_Train, centroids, spreads)
 design_matriX_Val = design_matrix(X_Val, centroids, spreads)
 design_matriX_Test = design_matrix(X_Test, centroids, spreads)
-# W_SGD = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, 
-# print(W)
+# W_SGD = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data, design_matrix_val, Y_Val)
 
 ###############Validation and Parameters fine tuning
 # calculating the closed form
