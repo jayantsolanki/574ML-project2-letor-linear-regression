@@ -10,10 +10,20 @@ from scipy.cluster.vq import kmeans2,vq
 #input : data set, and number of clusters required
 #output : centroids calculated, spreads is the K covariance matrix
 def kMeans(X, K):
+<<<<<<< HEAD
 	# np.random.shuffle(X)
+=======
+	#np.random.shuffle(X)
+>>>>>>> 80b99921e33881e5aaa7557d33bea3439e045214
 	[N,D]=X.shape
+	Iterater=10
 	print("Performing Kmeans clustering")
-	centroids,_ = kmeans2(X,K)
+	centroids=np.zeros((K, D))
+	for i in range(1,Iterater+1): #running times
+		centrds,_ = kmeans2(X,K,minit='points')
+		centroids=centroids+centrds
+	centroids=centroids/Iterater
+
 	# print ("Printing the centroids found:")
 	# print(centroids)np.linalg.inv
 	idx,_ = vq(X,centroids)
@@ -101,6 +111,8 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 def erms(design_matrix, Y, W, L2_lambda):
 	[N, D] = design_matrix.shape
 	Y_dash = design_matrix.dot(W)
+	print(Y_dash[1:10])
+	print("min Y max Y = %0.4f  %0.4f"%(np.min(Y_dash), np.max(Y_dash)))
 	Error =  np.sum(np.square(Y - Y_dash))/2 + 0.5*L2_lambda*(W.T.dot(W))
 	Erms = np.sqrt((2 * Error)/N)
 	return Erms[0, 0]
