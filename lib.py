@@ -70,16 +70,10 @@ def closed_form_sol(L2_lambda, design_matrix, output_data):
 #function sgd_solution(L2_lambda, design_matrix, output_data)
 #input : learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data
 #output : weights
-def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data, design_matrix_val, Y_Val):
+def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data):
 	[N,D]=design_matrix.shape
 	E=0
 	weights = np.zeros([1,D])
-	valError = float("inf")#defining the infinite value for the validation error, initially
-	weights_star = np.zeros([1,D]) #weight to store the optimum weights
-	i=0
-	i_star=0
-	j=0
-	P=10# patience value
 	for epoch in range(num_epochs):
 		
 		for i in range(int(N/minibatch_size)):
@@ -90,14 +84,42 @@ def sgd_solution(learning_rate, minibatch_size, num_epochs, L2_lambda, design_ma
 			E_D = np.matmul((np.matmul(Phi, weights.T)-t).T, Phi)
 			E = (E_D + L2_lambda * weights) / minibatch_size
 			weights = weights - learning_rate * E
-		i=i+int(N/minibatch_size)
+		# print (weights.shape)
+		# print(np.linalg.norm(E))
+		# print (weights)
+	return weights.flatten()
+
+#################################
+#function for calculating the gradient descent solution
+#function sgd_solution(L2_lambda, design_matrix, output_data)
+#input : learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data
+#output : weights
+def sgd_solution_early_stop(learning_rate, minibatch_size, num_epochs, L2_lambda, design_matrix, output_data, design_matrix_val, Y_Val):
+	[N,D]=design_matrix.shape
+	E=0
+	weights = np.zeros([1,D])
+	valError = float("inf")#defining the infinite value for the validation error, initially
+	weights_star = np.zeros([1,D]) #weight to store the optimum weights
+	I=0
+	I_star=0#actual training steps
+	j=0#tracking the patience 
+	P=10# patience value
+	for epoch in range(num_epochs):
+		for i in range(int(N/minibatch_size)):
+			lower_bound = i * minibatch_size
+			upper_bound = min((i+1)*minibatch_size, N)
+			Phi = design_matrix[lower_bound : upper_bound, :]
+			t = output_data[lower_bound : upper_bound, :]
+			E_D = np.matmul((np.matmul(Phi, weights.T)-t).T, Phi)
+			E = (E_D + L2_lambda * weights) / minibatch_size
+			weights = weights - learning_rate * E
 		# print (weights.shape)
 		valE = erms(design_matrix_val, Y_Val, weights.T, L2_lambda)
 		# print (epoch)
 		if valE<valError:
 			valError=valE
 			j=0; #resetting the j
-			i_star = i
+			I_star = I
 			weights_star = weights
 		elif j==P-1:
 			print ("Early stopped at epoch: ", epoch)
