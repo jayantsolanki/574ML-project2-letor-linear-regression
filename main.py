@@ -9,19 +9,22 @@ from lib import *
 import matplotlib.pyplot as plt
 # from sklearn.model_selection import train_test_split
 
-#K=20#number of clusters
+# K=38#11#number of clusters
 #L2_lambda=0.1
 data_mode = 2
-implementation_mode = 'C' #C - Closed form solution; S- Stochastic Gradient Descent
-
+implementation_mode = 'E' #C - Closed form solution; S- Stochastic Gradient Descent; 'E' - SGD with Early St
 if data_mode == 1:
 	X = np.loadtxt('input.csv', delimiter=',')
 	Y = np.genfromtxt('output.csv').reshape([-1, 1])
+	k=11 #optimised M number or cluster number
+	L2_lambda=0.1 #optimised lambda 
 elif data_mode == 2:
 	X = np.genfromtxt('Querylevelnorm_X.csv', delimiter=',')
 	Y = np.genfromtxt('Querylevelnorm_t.csv', delimiter=',').reshape([-1, 1])
+	k=35 #optimised M number or cluster number 
+	L2_lambda=0.1 #optimised lambda  
 
-
+<<<<<<< HEAD
 # X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size = 0.2, random_state=0)
 # X_Val, X_Test, Y_Val, Y_Test = train_test_split(X_Test, Y_Test, test_size = 0.5, random_state=0)
 [N, D]  = X.shape
@@ -38,11 +41,105 @@ print (X_Test.shape)
 print (Y_Train.shape)
 print (Y_Val.shape)
 print (Y_Test.shape) 	
+=======
+X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size = 0.2, random_state=0)
+X_Val, X_Test, Y_Val, Y_Test = train_test_split(X_Test, Y_Test, test_size = 0.5, random_state=0)
+[N, D]  = X_Train.shape
+	
+while 1:
+	try:
+		[centroids, spreads]=kMeans(X_Train, k)# number of clusters is 3
+	except:
+		continue
+	break
+centroids = centroids[:, np.newaxis, :]
+X_Train = X_Train[np.newaxis, :, :]
+design_matriX_Train=design_matrix(X_Train, centroids, spreads)
+design_matriX_Val = design_matrix(X_Val, centroids, spreads)
+design_matriX_Test = design_matrix(X_Test, centroids, spreads)
+# Closed-form solution
+print("For M : ", k)
+print("LeToR Data: Printing Closed Form Solution...");
+wcf = closed_form_sol(L2_lambda=L2_lambda, design_matrix=design_matriX_Train, output_data=Y_Train)
+print(wcf)
+wcf = wcf.reshape([k+1,1]) #reshaping
+ErmsTest_cf = erms(design_matriX_Test, Y_Test, wcf, L2_lambda)
+print("At lambda : %0.04f and M = %d, Test Error using Closed Form: %0.04f" %(L2_lambda, k,ErmsTest_cf))
 
+# Gradient descent solution without early stopping
+print("LeToR Data: Printing SGD Solution without early stopping...");
+wsgd = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=10000, L2_lambda=L2_lambda, design_matrix=design_matriX_Train, output_data=Y_Train)
+print(wsgd)
+wsgd = wsgd.reshape([k+1,1])
+ErmsTest_sgd = erms(design_matriX_Test, Y_Test, wsgd, L2_lambda)
+print("At lambda : %0.04f and M = %d, Test Error using SGD: %0.04f" %(L2_lambda, k,ErmsTest_sgd))
 
-# W_SGD = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=200, L2_lambda=0.1, design_matrix=design_matrix, output_data=syn_output_data, design_matrix_val, Y_Val)
+# Gradient descent solution with early stopping
+print("LeToR Data: Printing SGD Solution with early stopping...");
+wsgde = sgd_solution_early_stop(learning_rate=1, minibatch_size=N, num_epochs=10000, L2_lambda=L2_lambda, design_matrix=design_matriX_Train, output_data=Y_Train, design_matrix_val = design_matriX_Val, Y_Val = Y_Val)
+print(wsgde)
+wsgde = wsgde.reshape([k+1,1])
+ErmsTest_sgde = erms(design_matriX_Test, Y_Test, wsgde, L2_lambda)
+print("At lambda : %0.04f and M = %d, Test Error using SGD with early stopping: %0.04f" %(L2_lambda, k, ErmsTest_sgde))
 
-###############Validation and Parameters fine tuning
+>>>>>>> 00e2a770edf3ddd4e16a3958fa5ed59d10af6024
+
+# Uncommend lower part to check tuning paramters
+###############################################Validation and Parameters fine tuning#############################################################
+# k=3 #initial cluster size
+# while k<=30:
+# 	try:
+# 		[centroids, spreads]=kMeans(X_Train, k)# number of clusters is 3
+# 	except:
+# 		continue
+
+# 	# centroids=centroids.reshape([K,1,D])
+# 	centroids = centroids[:, np.newaxis, :]
+# 	X_Train2 = X_Train[np.newaxis, :, :]
+# 	#print (X_Train.shape)
+# 	# print ("Printing the centroids found:")
+# 	# print(centroids.shape)
+# 	lowest=100000
+# 	LAMBDA=1000
+
+# 	design_matriX_Train=design_matrix(X_Train2, centroids, spreads)
+# 	design_matriX_Val = design_matrix(X_Val, centroids, spreads)
+# 	design_matriX_Test = design_matrix(X_Test, centroids, spreads)
+# 	# print(design_matriX_Train.shape)
+# 	Erms_train = []
+# 	Erms_val = []
+# 	Erms_test = []
+# 	lam=[]
+# 	W_star=[]
+# 	trainError=0
+# 	for l in np.arange(0.1,2,0.1):
+# 		if implementation_mode == 'C':
+# 			W = closed_form_sol(l, design_matriX_Train, Y_Train)
+# 		elif implementation_mode == 'S':
+# 			W = sgd_solution(learning_rate=1, minibatch_size=N, num_epochs=10000, L2_lambda=l, design_matrix=design_matriX_Train, output_data=Y_Train)
+# 		elif implementation_mode == 'E':
+# 			W = sgd_solution_early_stop(learning_rate=1, minibatch_size=N, num_epochs=10000, L2_lambda=l, design_matrix=design_matriX_Train, output_data=Y_Train, design_matrix_val = design_matriX_Val, Y_Val = Y_Val)
+# 		W = W.reshape([k+1,1])
+# 		# print (W.shape)
+# 		# break
+# 		# print (W_CF)
+# 		ErmsTrain= erms(design_matriX_Train, Y_Train, W, l)
+# 		Erms_train.append(ErmsTrain)
+# 		lam.append(l)
+# 		ErmsVal = erms(design_matriX_Val, Y_Val, W, l)
+# 		Erms_val.append(ErmsVal)
+	
+# 		if lowest>ErmsVal:
+# 			lowest=ErmsVal 	
+# 			trainError = ErmsTrain
+# 			LAMBDA=l
+# 			W_star=W
+# 	ErmsTest = erms(design_matriX_Test, Y_Test, W_star, LAMBDA)
+# 	Erms_test.append(ErmsTest)
+# 	print("%d %0.4f %0.4f %0.4f %0.4f" %(k, LAMBDA, trainError, lowest, ErmsTest))
+# 	k = k+2
+
+###################################################################Tuning ends#############################################################	
 # calculating the closed form
 # Erms_train=0;
 # l=0;
@@ -50,66 +147,6 @@ print (Y_Test.shape)
 # fig = plt.figure()
 # ax1 = fig.add_subplot(211)
 # ax2 = fig.add_subplot(212)
-k=80
-while k<=80:
-	try:
-		[centroids, spreads]=kMeans(X_Train, k)# number of clusters is 3
-	except:
-		continue
-
-	# centroids=centroids.reshape([K,1,D])
-	centroids = centroids[:, np.newaxis, :]
-	X_Train2 = X_Train[np.newaxis, :, :]
-	#print (X_Train.shape)
-	# print ("Printing the centroids found:")
-	# print(centroids.shape)
-	lowest=100000
-	LAMBDA=1000
-
-	design_matriX_Train=design_matrix(X_Train2, centroids, spreads)
-	design_matriX_Val = design_matrix(X_Val, centroids, spreads)
-	design_matriX_Test = design_matrix(X_Test, centroids, spreads)
-	# print(design_matriX_Train.shape)
-	Erms_train = []
-	Erms_val = []
-	Erms_test = []
-	lam=[]
-	W_star=[]
-	trainError=0
-	for l in np.arange(0.1,2,0.1):
-		if implementation_mode == 'C':
-			W = closed_form_sol(l, design_matriX_Train, Y_Train)
-		elif implementation_mode == 'S':
-			W = sgd_solution(learning_rate=1, minibatch_size=5569, num_epochs=100, L2_lambda=0.1, design_matrix=design_matriX_Train, output_data=Y_Train, design_matrix_val = design_matriX_Val, Y_Val = Y_Val)
-		W = W.reshape([k+1,1])
-		# print (W.shape)
-		# break
-		# print (W_CF)
-		ErmsTrain= erms(design_matriX_Train, Y_Train, W, l)
-		Erms_train.append(ErmsTrain)
-		lam.append(l)
-		ErmsVal = erms(design_matriX_Val, Y_Val, W, l)
-		Erms_val.append(ErmsVal)
-		#Y_dash_test = design_matriX_Val.dot(W)
-
-		# if lowest>ErmsVal:
-		# 	lowest=ErmsVal 	
-		# 	LAMBDA=l
-		# 	break
-		if lowest>ErmsVal:
-			lowest=ErmsVal 	
-			trainError = ErmsTrain
-			LAMBDA=l
-			W_star=W
-	ErmsTest = erms(design_matriX_Test, Y_Test, W_star, LAMBDA)
-	Erms_test.append(ErmsTest)
-	# print("At lambda : %0.4f and K = %d" %(LAMBDA, k))
-	# print("		Min Erms in Training Set is = %0.4f" %trainError)
-	# print("		Min Erms in Validation Set is = %0.4f" %lowest)
-	# print("		Error in Test Set is = %0.4f" %ErmsTest)
-	print("%d %0.4f %0.4f %0.4f %0.4f" %(k, LAMBDA, trainError, lowest, ErmsTest))
-	k = k+5
-	# print("for lambda = %0.4f, ERMS Train = %0.6f, ERMS Val = %0.6f"%(l, Erms_train, Erms_val))
 # print(lam)
 # print(Erms_train)
 # axes = plt.gca()
